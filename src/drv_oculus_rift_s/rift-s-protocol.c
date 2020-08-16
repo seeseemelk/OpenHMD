@@ -357,7 +357,7 @@ int rift_s_read_device_info (hid_device *hid, rift_s_device_info_t *device_info)
 	return 0;
 }
 
-int rift_s_get_report1 (hid_device *hid) {
+int rift_s_get_firmware_version (hid_device *hid) {
 	uint8_t buf[FEATURE_BUFFER_SIZE];
 	int res;
 
@@ -426,7 +426,7 @@ int rift_s_hmd_enable (hid_device *hid, bool enable) {
 	/* Send camera report with enable=true enables the streaming. The
 	 * 2nd byte seems something to do with sync, but doesn't always work,
 	 * not sure why yet. */
-	return rift_s_send_camera_report (hid, enable, false);
+	return rift_s_send_camera_report (hid, enable, true);
 }
 
 int rift_s_read_devices_list (hid_device *handle, rift_s_devices_list_t *dev_list)

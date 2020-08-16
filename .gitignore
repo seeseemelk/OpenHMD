@@ -13,3 +13,4 @@ tests/unittests/unittests
 .cproject
 .project
 build/
+.settings

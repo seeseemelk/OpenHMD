@@ -9,6 +9,8 @@
 
 #include "rift-s.h"
 
+#include <hidapi.h>
+
 #define MAX_LOG_SIZE 1024
 
 typedef struct {

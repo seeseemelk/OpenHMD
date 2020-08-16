@@ -19,6 +19,9 @@
 #include "rift-s-firmware.h"
 #include "rift-s-controller.h"
 #include "rift-s-radio.h"
+#include "rift-s-camera.h"
+
+#include <hidapi.h>
 
 #define MAX_CONTROLLERS 2
 
@@ -45,11 +48,14 @@ struct rift_s_hmd_s {
 	rift_s_controller_state controllers[MAX_CONTROLLERS];
 
 	/* Radio comms manager */
-  rift_s_radio_state radio_state;
+	rift_s_radio_state radio_state;
 
 	/* OpenHMD output devices */
 	rift_s_device_priv hmd_dev;
 	rift_s_controller_device touch_dev[MAX_CONTROLLERS];
+
+	/* Cameras */
+	rift_s_camera_t cameras;
 };
 
 #endif

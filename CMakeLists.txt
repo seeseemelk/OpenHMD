@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(openhmd C)
+project(openhmd C CXX)
 
 set(CMAKE_C_STANDARD 99)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # choose glvnd over legacy gl when available
@@ -66,13 +67,21 @@ if(OPENHMD_DRIVER_OCULUS_RIFT_S)
 	${CMAKE_CURRENT_LIST_DIR}/src/drv_oculus_rift_s/rift-s-firmware.c
 	${CMAKE_CURRENT_LIST_DIR}/src/drv_oculus_rift_s/rift-s-protocol.c
 	${CMAKE_CURRENT_LIST_DIR}/src/drv_oculus_rift_s/rift-s-radio.c
+	${CMAKE_CURRENT_LIST_DIR}/src/drv_oculus_rift_s/rift-s-camera.c
+	${CMAKE_CURRENT_LIST_DIR}/src/drv_oculus_rift_s/rift-s-view.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/ext_deps/nxjson.c
 	)
-  add_definitions(-DDRIVER_OCULUS_RIFT_S)
+ 	add_definitions(-DDRIVER_OCULUS_RIFT_S)
 
 	find_package(HIDAPI REQUIRED)
+	find_package(libuvc REQUIRED)
+	find_package(OpenCV REQUIRED)
 	include_directories(${HIDAPI_INCLUDE_DIRS})
+	include_directories(${LIBUVC_INCLUDE_DIRS})
+	include_directories(${OpenCV_INCLUDE_DIRS})
 	set(LIBS ${LIBS} ${HIDAPI_LIBRARIES})
+	set(LIBS ${LIBS} ${libuvc_LIBRARIES})
+	set(LIBS ${LIBS} ${OpenCV_LIBRARIES})
 endif(OPENHMD_DRIVER_OCULUS_RIFT_S)
 
 if(OPENHMD_DRIVER_DEEPOON)

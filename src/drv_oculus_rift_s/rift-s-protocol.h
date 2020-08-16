@@ -10,6 +10,8 @@
 
 #include "../openhmdi.h"
 
+#include <hidapi.h>
+
 #define FEATURE_BUFFER_SIZE 256
 
 #define KEEPALIVE_INTERVAL_MS 1000
@@ -205,8 +207,7 @@ typedef struct {
   rift_s_device_type_record_t devices[DEVICES_LIST_MAX_DEVICES];
 } rift_s_devices_list_t;
 
-/* FIXME: Rename this - report1 gets the firmware version */
-int rift_s_get_report1 (hid_device *hid);
+int rift_s_get_firmware_version (hid_device *hid);
 int rift_s_read_device_info (hid_device *hid, rift_s_device_info_t *device_info);
 int rift_s_read_imu_config (hid_device *hid, rift_s_imu_config_t *imu_config);
 int rift_s_hmd_enable (hid_device *hid, bool enable);

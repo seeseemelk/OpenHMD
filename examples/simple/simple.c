@@ -134,7 +134,8 @@ int main(int argc, char** argv)
 	printf("\n\n");
 
 	// Ask for n rotation quaternions and position vectors
-	for(int i = 0; i < 10000; i++){
+	for(int i = 0; i < 2500000; i++){
+	//for(int i = 0; i < 10; i++){
 		ohmd_ctx_update(ctx);
 
 		// this can be used to set a different zero point

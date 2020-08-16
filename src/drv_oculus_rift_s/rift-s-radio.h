@@ -13,6 +13,8 @@
 
 #include "rift-s.h"
 
+#include <hidapi.h>
+
 typedef struct rift_s_radio_command rift_s_radio_command;
 typedef struct rift_s_radio_state rift_s_radio_state;
 

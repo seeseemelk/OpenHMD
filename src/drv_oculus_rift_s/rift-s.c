@@ -439,7 +439,7 @@ static rift_s_hmd_t *open_hmd(ohmd_driver* driver, ohmd_device_desc* desc)
 			goto cleanup;
 	}
 
-	if (rift_s_get_report1 (hid) < 0) {
+	if (rift_s_get_firmware_version (hid) < 0) {
 			LOGE("Failed to read Rift S Report 1");
 			goto cleanup;
 	}
@@ -447,6 +447,11 @@ static rift_s_hmd_t *open_hmd(ohmd_driver* driver, ohmd_device_desc* desc)
 	if (rift_s_read_imu_config (hid, &priv->imu_config) < 0) {
 			LOGE("Failed to read IMU configuration block");
 			goto cleanup;
+	}
+
+	if (rift_s_camera_open(priv) < 0) {
+		LOGE("Failed to open UVC camera");
+		goto cleanup;
 	}
 
 	if (read_calibration (priv, hid) < 0)
@@ -472,7 +477,7 @@ static rift_s_hmd_t *open_hmd(ohmd_driver* driver, ohmd_device_desc* desc)
 
 	/* FIXME: Incorrection distortion taken from the Rift CV1 for now */
 #if 1
-  ohmd_set_universal_distortion_k(&(hmd_dev->base.properties), 0.098f, .324f, -0.241f, 0.819f);
+	ohmd_set_universal_distortion_k(&(hmd_dev->base.properties), 0.098f, .324f, -0.241f, 0.819f);
 	ohmd_set_universal_aberration_k(&(hmd_dev->base.properties), 0.9952420f, 1.0f, 1.0008074f);
 #else
   /* First pass at manual calibration */
@@ -507,8 +512,8 @@ static rift_s_hmd_t *open_hmd(ohmd_driver* driver, ohmd_device_desc* desc)
 		init_touch_device (priv->touch_dev + i, i);
 
 	if (rift_s_hmd_enable (hid, true) < 0) {
-			LOGE("Failed to enable Rift S");
-			goto cleanup;
+		LOGE("Failed to enable Rift S");
+		goto cleanup;
 	}
 
 	return priv;
@@ -522,6 +527,7 @@ cleanup:
 static void close_hmd(rift_s_hmd_t *hmd)
 {
 	rift_s_radio_state_clear (&hmd->radio_state);
+	rift_s_camera_close(hmd);
 
 	if (hmd->handles[0]) {
 		if (rift_s_hmd_enable (hmd->handles[0], true) < 0) {
@@ -645,7 +651,9 @@ static void get_device_list(ohmd_driver* driver, ohmd_device_list* list)
 				desc->revision = 0;
 		
 				desc->device_class = OHMD_DEVICE_CLASS_HMD;
-				desc->device_flags = OHMD_DEVICE_FLAGS_ROTATIONAL_TRACKING;
+				desc->device_flags =
+						  OHMD_DEVICE_FLAGS_ROTATIONAL_TRACKING
+						| OHMD_DEVICE_FLAGS_POSITIONAL_TRACKING;
 
 				strcpy(desc->path, cur_dev->path);
 
